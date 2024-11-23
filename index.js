@@ -5,8 +5,7 @@ import { parseResult } from './result-parser.js';
 const acceptLicense = '--accept-license'
 const acceptGdpr = '--accept-gdpr'
 
-// const speedTest = spawn('./bin/speedtest', [acceptLicense, acceptGdpr, '-f', 'json'])
-const speedTest = spawn('cat', ['./tests/example.json'])
+const speedTest = spawn('./bin/speedtest', [acceptLicense, acceptGdpr, '-f', 'json'])
 
 const startTime = Date.now()
 
