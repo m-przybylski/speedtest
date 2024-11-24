@@ -21,8 +21,7 @@ new Chart(ctx, {
     scales: {
       y: {
         ticks: {
-          callback: function (value, index, ticks) {
-            console.log(value, index, ticks);
+          callback: function (value, _index, _ticks) {
             return speedText(value);
           },
         },
