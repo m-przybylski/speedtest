@@ -3,18 +3,39 @@ import sqlite3 from "sqlite3";
 const sqlite = sqlite3;
 const db = new sqlite.Database("./speedtest.db");
 
+const Time = (function () {
+  const second = 1000;
+  const minute = 60 * second;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+
+  return {
+    second, minute, hour, day
+  }
+})()
+
+
+
 function initializeDatabase() {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS readings(
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      ping INTEGER,
-      download INTEGER,
-      upload INTEGER,
-      response TEXT,
-      startTime INTEGER,
-      endTime INTEGER
-    ) STRICT
-  `);
+  return new Promise((resolve, reject) => {
+    db.exec(
+      `
+      CREATE TABLE IF NOT EXISTS readings(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ping INTEGER,
+        download INTEGER,
+        upload INTEGER,
+        response TEXT,
+        startTime INTEGER,
+        endTime INTEGER
+      ) STRICT
+    `,
+      (err) => {
+        if (err) return reject(err);
+        resolve();
+      }
+    );
+  });
 }
 
 function insertReading(data) {
@@ -33,14 +54,26 @@ VALUES (?, ?, ?, ?, ?, ?) RETURNING id`
       Date.now(),
       (err, data) => {
         if (err) {
-          return reject(err)
+          return reject(err);
         }
-        resolve(data)
+        resolve(data);
       }
     );
   });
 }
 
-initializeDatabase();
+function getData({ startTimeFrom, startTimeTo } = {}) {
+  startTimeFrom = startTimeFrom ?? Date.now() - 6 * Time.hour;
+  startTimeTo = startTimeTo ?? Date.now()
+  const query = db.prepare(`SELECT ping, download, upload, startTime FROM readings WHERE startTime BETWEEN ? and ?`)
+  return new Promise((resolve, reject) => {
+    query.all([startTimeFrom, startTimeTo], (err, data) => {
+      if (err) return reject(err)
+      resolve(data)
+    })
+  });
+}
 
-export { insertReading };
+await initializeDatabase();
+
+export { insertReading, getData };

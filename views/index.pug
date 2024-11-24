@@ -1,0 +1,38 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Internet speed
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css")
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    style
+      include style.css
+    script.
+      //- this is bad idea. Figure out how to use it safe. but please do not use API call
+      const measurements = !{measurementsStr}
+      !{speedText}
+
+  body
+    .container
+      h1 Internet Speed data (last 6 hours)
+      canvas(id="chart")
+      table
+        thead
+          tr
+            td Download
+            td Upload
+            td Ping
+            td Time
+        tbody
+          each measurement in measurements
+            tr
+              td= speedText(measurement.download)
+              td= speedText(measurement.upload)
+              td= speedText(measurement.ping)
+              td= new Date(measurement.startTime).toLocaleString()
+
+    script
+      include script.js
