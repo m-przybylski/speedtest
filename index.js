@@ -1,14 +1,14 @@
 import { spawn } from "node:child_process";
 import { insertReading } from "./database.js";
 import { parseResult } from "./result-parser.js";
-import { fileURLToPath } from "url";
-import { resolve, dirname } from "node:path";
+import { __dirname } from "./dirname.js";
+import { resolve } from "node:path";
 
 const acceptLicense = "--accept-license";
 const acceptGdpr = "--accept-gdpr";
 
 const speedTest = spawn(
-  resolve(dirname(fileURLToPath(import.meta.url)), "bin", "speedtest"),
+  resolve(__dirname, "bin", "speedtest"),
   [acceptLicense, acceptGdpr, "-f", "json"]
 );
 

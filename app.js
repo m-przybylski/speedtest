@@ -1,5 +1,7 @@
 import express from 'express';
 import { getData } from './database.js';
+import { resolve } from 'node:path'
+import { __dirname } from './dirname.js'
 
 const PORT = 3000
 const app = express()
@@ -20,7 +22,7 @@ app.set('view engine', 'pug')
 
 app.get("/", async (req, res, next) => {
   const data = await getData()
-  res.render('index', { measurements: data, measurementsStr: JSON.stringify(data), speedText })
+  res.render(resolve(__dirname, 'views', 'index'), { measurements: data, measurementsStr: JSON.stringify(data), speedText })
 })
 app.listen(PORT, () => {
   console.log(`App is running on port: ${PORT}`)
